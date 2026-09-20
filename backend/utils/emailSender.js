@@ -45,4 +45,23 @@ async function forgotPasswordEmail(email, token) {
   }
 }
 
-module.exports = { verificationEmail, forgotPasswordEmail };
+async function adminEmail(email, name) {
+  try {
+    const info = await transporter.sendMail({
+      from: "nabil1000cc@gmail.com",
+      to: email,
+      subject: "Approve new category",
+      html: `
+        <b>Create a new category <a>${name}</a></b>
+      `,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  } catch (err) {
+    console.error("Error while sending mail:", err);
+  }
+}
+
+module.exports = { verificationEmail, forgotPasswordEmail, adminEmail };

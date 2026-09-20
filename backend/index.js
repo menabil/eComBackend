@@ -1,19 +1,25 @@
-require("node:dns").setServers(["1.1.1.1", "8.8.8.8"]);
+// require('node:dns').setServers(['1.1.1.1'],['8.8.8.8'])
 require("dotenv").config();
 const express = require("express");
-const authRouter = require("./routes/authRoute");
-const userRouter = require("./routes/userRoute");
-const adminRouter = require("./routes/adminRouter");
-const vendorRouter = require("./routes/vendorRouter");
-const mongoDBConfig = require("./config/mongoDBConfig");
+const cors = require("cors");
+const mongoDb = require("./config/mongoDb");
+const { swaggerUI, specs } = require("./config/swagger");
+const authRoute = require("./routes/authRoute");
+const userRoute = require("./routes/userRoute");
+const adminRoute = require("./routes/adminRoute");
+const vendorRoute = require("./routes/vendorRoute");
 const {
   adminMiddleware,
   vendorMiddleware,
   userMiddleware,
 } = require("./middlewares/roleMiddleware");
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 mongoDBConfig();
 
 app.use("/api/v1/auth", authRouter);
