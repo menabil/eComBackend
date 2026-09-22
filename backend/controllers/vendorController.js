@@ -1,4 +1,4 @@
-const vendorController = () => {
+let vendorController = async (req, res) => {
   console.log("Hello Vendor");
 };
 

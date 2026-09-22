@@ -1,9 +1,12 @@
 const User = require("../models/userSchema");
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
-const bcrypt = require("bcrypt");
-const { verificationEmail, forgetPassEmail } = require("../utils/emailSender");
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const jwt = require("jsonwebtoken");
+const {
+  verificationEmail,
+  forgotPasswordEmail,
+} = require("../utils/emailSender");
 
 let registrationController = async (req, res) => {
   let existingUser = await User.findOne({ email: email });

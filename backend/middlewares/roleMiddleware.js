@@ -1,91 +1,58 @@
 const jwt = require("jsonwebtoken");
 
-const adminMiddleware = async (req, res, next) => {
-  try {
-    let authorizationToken = req.headers.authorization;
+let adminMiddleware = async (req, res, next) => {
+  let authorizationToken = req.headers.authorization;
 
-    if (!authorizationToken) {
-      return res.status(401).json({
-        success: false,
-        message: "token is missing",
-      });
-    }
+  let token = authorizationToken.split(" ")[1];
 
-    let token = authorizationToken.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
+  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
 
-    if (decoded.role !== "admin") {
-      return res.status(401).json({
-        success: false,
-        message: "you are not authorized",
-      });
-    }
-    next();
-  } catch (error) {
+  if (decoded.role !== "admin") {
     return res.status(401).json({
       success: false,
-      message: "invalid or expired token",
+      message: "You are not authorized",
     });
+  } else {
+    next();
   }
 };
 
 let vendorMiddleware = async (req, res, next) => {
-  try {
-    let authorizationToken = req.headers.authorization;
+  let authorizationToken = req.headers.authorization;
 
-    if (!authorizationToken) {
-      return res.status(401).json({
-        success: false,
-        message: "token is missing",
-      });
-    }
+  let token = authorizationToken.split(" ")[1];
 
-    let token = authorizationToken.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
+  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
 
-    if (decoded.role !== "vendor" && decoded.role !== "admin") {
-      return res.status(401).json({
-        success: false,
-        message: "you are not authorized",
-      });
-    }
-
-    next();
-  } catch (error) {
+  if (decoded.role !== "vendor") {
     return res.status(401).json({
       success: false,
-      message: "invalid or expired token",
+      message: "You are not authorized",
     });
+  } else {
+    next();
   }
 };
 
 let userMiddleware = async (req, res, next) => {
-  try {
-    let authorizationToken = req.headers.authorization;
-
-    if (!authorizationToken) {
-      return res.status(401).json({
-        success: false,
-        message: "token is missing",
-      });
-    }
-
-    let token = authorizationToken.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
-
-    if (!decoded) {
-      return res.status(401).json({
-        success: false,
-        message: "you are not logged in",
-      });
-    }
-
-    next();
-  } catch (error) {
+  let authorizationToken = req.headers.authorization;
+  if (!authorizationToken) {
     return res.status(401).json({
       success: false,
-      message: "invalid or expired token",
+      message: "You are not login",
     });
+  }
+  let token = authorizationToken.split(" ")[1];
+
+  let decoded = jwt.verify(token, process.env.JWT_VERIFY_SECRET);
+
+  if (!decoded) {
+    return res.status(401).json({
+      success: false,
+      message: "You are not login",
+    });
+  } else {
+    next();
   }
 };
 

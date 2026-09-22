@@ -1,56 +1,22 @@
-const jwt = require("jsonwebtoken");
 let Cat = require("../models/categorySchema");
-const { adminEmail } = require("../utils/emailSender");
 
-let userController = async (req, res) => {
-  try {
-    let token = req.headers.authorization.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
-
-    await User.findByIdAndUpdate(decoded._id, req.body, { new: true });
-
-    return res.status(200).json({
-      success: true,
-      message: "profile updated successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "server error",
-    });
-  }
-};
+let userController = async (req, res) => {};
 
 let createCategory = async (req, res) => {
   let { name } = req.body;
 
-  if (!name) {
+  let existingName = await Cat.findOne({ name: name.toLowerCase() });
+
+  if (existingName) {
     return res.status(400).json({
       success: false,
-      message: "Please fill name",
+      message: "Category already exists",
     });
   }
 
-  const existingCategory = await Categories.findOne({
-    name: name.toLowerCase(),
-  });
-
-  if (existingCategory) {
-    return res.status(400).json({
-      success: false,
-      message: "Category already exist",
-    });
-  }
-
-  await new Categories({
+  let cat = await new Cat({
     name: name.toLowerCase(),
   }).save();
-
-  const admin = await User.findOne({ role: "admin" });
-
-  if (admin) {
-    await adminEmail(admin.email, name);
-  }
 
   return res.status(201).json({
     success: true,
