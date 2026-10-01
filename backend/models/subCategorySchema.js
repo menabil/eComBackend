@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const categorySchema = new Schema({
+const subCategorySchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -12,10 +12,10 @@ const categorySchema = new Schema({
     enum: ["active", "deactive", "reject"],
     default: "deactive",
   },
-  owner: {
+  parentCategory: {
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Category",
   },
 });
 
-module.exports = mongoose.model("Category", categorySchema);
+module.exports = mongoose.model("SubCategory", subCategorySchema);

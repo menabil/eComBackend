@@ -1,11 +1,7 @@
 const express = require("express");
-const {
-  userController,
-  createCategory,
-  getAllCategory,
-} = require("../controllers/userController");
+const { userController } = require("../controllers/userController");
 const router = express.Router();
 
-router.get("/product", userController);
+router.get("/all/user", userController);
 
 module.exports = router;
