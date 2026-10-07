@@ -26,6 +26,10 @@ let createCategory = async (req, res) => {
 
 let getAllCategory = async (req, res) => {
   let cat = await Cat.find({}).populate("owner");
+  // let cat = await Cat.find({}).populate({
+  //   path: "owner",
+  //   select: "-password",
+  // });
 
   return res.status(200).json({
     success: true,
@@ -50,6 +54,11 @@ let createSubCategory = async (req, res) => {
     name: name.toLowerCase(),
     parentCategory: parentCategory,
   }).save();
+
+  let catUpdate = await Cat.findByIdAndUpdate(
+    { _id: parentCategory },
+    { $push: { subCategory: subCat._id } },
+  );
 
   return res.status(201).json({
     success: true,

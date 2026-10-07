@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const subCategorySchema = require("./subCategorySchema");
 const { Schema } = mongoose;
 
 const categorySchema = new Schema({
@@ -16,6 +17,12 @@ const categorySchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  subCategory: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "SubCategory",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Category", categorySchema);
