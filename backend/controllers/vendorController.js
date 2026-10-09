@@ -89,11 +89,29 @@ let getAllCategoryWiseSubCategory = async (req, res) => {
 
 let getAllOwnerWiseSubCategory = async (req, res) => {
   let { id } = req.params;
-  let data = await Cat.find({ owner: id });
 
-  data.map(async (item) => {
-    let allData = await SubCat.find({ parentCategory: item._id });
-    console.log(allData);
+  // promise start
+  let data = await Cat.find({ owner: id }).lean();
+  let promise = new Promise(function (resolve, reject) {
+    let cat = [];
+    data.map(async (item) => {
+      let allData = await SubCat.find({ parentCategory: item._id });
+      cat.push({
+        ...item,
+        subCategory: allData,
+      });
+        if (data.length == cat.length) {
+          resolve(cat);
+        }
+    });
+  });
+
+  promise.then((value) => {
+    return res.status(200).json({
+      success: true,
+      message: "All owner wise category",
+      data: value,
+    });
   });
 
   return res.status(200).json({
@@ -101,6 +119,7 @@ let getAllOwnerWiseSubCategory = async (req, res) => {
     message: "All owner wise category",
     data: data,
   });
+  // promise end
 };
 
 module.exports = {
