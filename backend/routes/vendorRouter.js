@@ -1,6 +1,5 @@
 const express = require("express");
 const {
-  vendorController,
   createCategory,
   getAllCategory,
   createSubCategory,
@@ -8,6 +7,7 @@ const {
   getAllCategoryWiseSubCategory,
   getAllOwnerWiseSubCategory,
 } = require("../controllers/vendorController");
+const { productController } = require("../controllers/productController");
 const router = express.Router();
 
 // Category 
@@ -20,5 +20,6 @@ router.get("/all/category/:id/sub-category", getAllCategoryWiseSubCategory);
 router.get("/all/user/:id/category", getAllOwnerWiseSubCategory);
 
 // Product
+router.post("/create/product", productController);
 
 module.exports = router;
