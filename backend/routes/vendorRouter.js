@@ -14,6 +14,7 @@ const {
   categoryWiseProduct,
   subCategoryWiseProduct,
   ownerWiseProduct,
+  bulkProductUpload,
 } = require("../controllers/productController");
 const router = express.Router();
 
@@ -33,5 +34,6 @@ router.delete("/product/delete/:id", deleteProduct);
 router.get("/product/category/:id", categoryWiseProduct);
 router.get("/product/subcategory/:id", subCategoryWiseProduct);
 router.get("/product/owner/:id", ownerWiseProduct);
+router.post("/bulk/product", upload.single("file"), bulkProductUpload);
 
 module.exports = router;

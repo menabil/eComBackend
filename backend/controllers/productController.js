@@ -1,4 +1,5 @@
 const Product = require("../models/productSchema");
+const readSheet = require("read-excel-file/node");
 
 // create product
 const createProduct = async (req, res) => {
@@ -160,6 +161,83 @@ const ownerWiseProduct = async (req, res) => {
   });
 };
 
+// Bulk product upload
+const bulkProductUpload = async (req, res) => {
+  
+  const schema = {
+    title: {
+      column: "title",
+      type: String,
+    },
+    description: {
+      column: "description",
+      type: String,
+    },
+    shortDescription: {
+      column: "shortDescription",
+      type: String,
+    },
+    price: {
+      column: "price",
+      type: Number,
+    },
+    images: {
+      url: {
+        column: "images.url",
+        type: String,
+      },
+      isMain: {
+        column: "images.isMain",
+        type: Boolean,
+      },
+    },
+    discount: {
+      column: "discount",
+      type: Number,
+    },
+    stock: {
+      column: "stock",
+      type: Number,
+    },
+    status: {
+      column: "status",
+      type: String,
+    },
+    sku: {
+      column: "sku",
+      type: String,
+    },
+    slug: {
+      column: "slug",
+      type: String,
+    },
+  };
+
+  const { objects, errors } = await readSheet(req.file.path, { schema });
+
+  let products = [];
+
+  objects.map((product) => {
+    products.push({
+      ...product,
+      slug: product.slug
+        ? product.slug
+        : product.title.toLowerCase().split(" ").join("-"),
+      sku: product.sku
+        ? product.sku
+        : `eco-${product.title.substring(0, 4)}-${Date.now()}`,
+      images: [{ url: product.images, isMain: true }],
+    });
+  });
+
+  await Product.insertMany(products);
+
+  res.status(200).json({
+    success: true,
+    message: "All product upload done",
+  });
+};
+
 module.exports = {
   createProduct,
   allProducts,
@@ -167,4 +245,5 @@ module.exports = {
   categoryWiseProduct,
   subCategoryWiseProduct,
   ownerWiseProduct,
+  bulkProductUpload,
 };
