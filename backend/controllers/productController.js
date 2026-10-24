@@ -211,31 +211,70 @@ const schema = {
   },
 };
 
-const bulkProductUpload = async (req, res) => {
+let bulkProductUpload = async (req, res) => {
+  console.log("hello", req.file);
   const { objects, errors } = await readSheet(req.file.path, { schema });
 
-  let products = [];
-
-  objects.map((product) => {
-    products.push({
-      ...product,
-      slug: product.slug
-        ? product.slug
-        : product.title.toLowerCase().split(" ").join("-"),
-      sku: product.sku
-        ? product.sku
-        : `eco-${product.title.substring(0, 4)}-${Date.now()}`,
-      images: [{ url: product.images, isMain: true }],
+  if (errors) {
+    return res.status(400).json({
+      success: false,
+      message: "Please upload valid information",
+      errors: errors,
     });
+  }
+  const products = objects.map((item) => {
+    return {
+      ...item,
+      slug: product.slug
+        ? item.slug
+        : item.title.toLowerCase().split(" ").join("-"),
+      sku: item.sku
+        ? item.sku
+        : `eco-${item.title.substring(0, 4)}-${Date.now()}`,
+      images: [
+        {
+          url: item.images,
+          isMain: false,
+        },
+      ],
+    };
   });
+
+  console.log(products);
 
   await Product.insertMany(products);
 
-  res.status(200).json({
+  res.status(201).json({
     success: true,
-    message: "All product upload done",
+    message: "All product upload successfully",
   });
 };
+
+// let bulkProductUpload = async (req, res) => {
+//     console.log('hello' , req.file);
+//     const { objects, errors } = await readSheet(req.file.path, { schema });
+
+//     const products = objects.map((product) => {
+//         return {
+//             ...product,
+//             images: [
+//                 {
+//                     url: product.images,
+//                     isMain: false
+//                 }
+//             ]
+//         };
+//     });
+
+//     console.log(products);
+
+//     await Product.insertMany(products);
+
+//     res.status(201).json({
+//         success : true,
+//         message : "All product upload successfully"
+//     })
+// }
 
 module.exports = {
   createProduct,

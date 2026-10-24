@@ -16,6 +16,7 @@ const {
   ownerWiseProduct,
   bulkProductUpload,
 } = require("../controllers/productController");
+const upload = require("../utils/imageStorage");
 const router = express.Router();
 
 // Category and sub category
