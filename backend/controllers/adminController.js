@@ -1,4 +1,5 @@
 let User = require("../models/userSchema");
+let Cat = require("../models/categorySchema");
 
 let allUserController = async (req, res) => {
   let users = await User.find({}).select("-password");
@@ -52,10 +53,34 @@ let updateUser = async (req, res) => {
   });
 };
 
+const categoryUpdate = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const updateCategory = await Cat.findByIdAndUpdate(
+    { id: id },
+    { status: status },
+    { new: true },
+  );
+
+  if (!updateCategory) {
+    return res.status(404).json({
+      success: false,
+      message: "Category not found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category updated",
+  });
+};
+
 module.exports = {
   allUserController,
   singleUser,
   activeUser,
   deactiveUser,
   updateUser,
+  categoryUpdate,
 };

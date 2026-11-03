@@ -250,31 +250,58 @@ let bulkProductUpload = async (req, res) => {
   });
 };
 
-// let bulkProductUpload = async (req, res) => {
-//     console.log('hello' , req.file);
-//     const { objects, errors } = await readSheet(req.file.path, { schema });
+// update product controller
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const exProduct = await Product.findOne({ _id: id });
 
-//     const products = objects.map((product) => {
-//         return {
-//             ...product,
-//             images: [
-//                 {
-//                     url: product.images,
-//                     isMain: false
-//                 }
-//             ]
-//         };
-//     });
+  if (!exProduct) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
 
-//     console.log(products);
+  if (req.body.sku || req.body.slug) {
+    return res.status(400).json({
+      success: false,
+      message: "SKU or Slug are not update",
+    });
+  }
 
-//     await Product.insertMany(products);
+  const images = [...exProduct.images];
 
-//     res.status(201).json({
-//         success : true,
-//         message : "All product upload successfully"
-//     })
-// }
+  if (req.files) {
+    req.files.map((item) => {
+      images.push({
+        url: item.path,
+        isMain: false,
+      });
+    });
+  }
+
+  exProduct.images = images;
+
+  await Product.findByIdAndUpdate(id, req.body, { new: true });
+  if (req.body.deleteImage) {
+    exProduct.images[0].isMain = true;
+    exProduct.images.splice(req.body.deleteImage, 1);
+  }
+
+  if (req.body.isMain) {
+    exProduct.images.map((item) => {
+      item.isMain = false;
+    });
+    exProduct.images[req.body.isMain].isMain = true;
+  }
+
+  await exProduct.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Product updated",
+  });
+};
 
 module.exports = {
   createProduct,
@@ -284,4 +311,5 @@ module.exports = {
   subCategoryWiseProduct,
   ownerWiseProduct,
   bulkProductUpload,
+  updateProduct,
 };
