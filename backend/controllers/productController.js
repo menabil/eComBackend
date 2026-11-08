@@ -1,7 +1,7 @@
 const Product = require("../models/productSchema");
 const readSheet = require("read-excel-file/node");
 
-// create product
+// Create Product
 const createProduct = async (req, res) => {
   let {
     title,
@@ -83,7 +83,7 @@ const createProduct = async (req, res) => {
   });
 };
 
-// all products
+// All Products
 const allProducts = async (req, res) => {
   let allProducts = await Product.find({}).populate([
     "category",
@@ -99,7 +99,7 @@ const allProducts = async (req, res) => {
   });
 };
 
-// delete product
+// Delete Product
 const deleteProduct = async (req, res) => {
   const { id } = req.params;
 
@@ -119,7 +119,7 @@ const deleteProduct = async (req, res) => {
   });
 };
 
-// category wise product
+// Category wise product
 const categoryWiseProduct = async (req, res) => {
   const { id } = req.params;
 
@@ -133,7 +133,7 @@ const categoryWiseProduct = async (req, res) => {
   });
 };
 
-// sub category wise products
+// Sub category wise products
 const subCategoryWiseProduct = async (req, res) => {
   const { id } = req.params;
 
@@ -147,7 +147,7 @@ const subCategoryWiseProduct = async (req, res) => {
   });
 };
 
-// owner wise products
+// Owner wise products
 const ownerWiseProduct = async (req, res) => {
   const { id } = req.params;
 
@@ -250,7 +250,7 @@ let bulkProductUpload = async (req, res) => {
   });
 };
 
-// update product controller
+// Update product controller
 const updateProduct = async (req, res) => {
   const { id } = req.params;
   const exProduct = await Product.findOne({ _id: id });

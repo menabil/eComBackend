@@ -2,6 +2,7 @@ let Cat = require("../models/categorySchema");
 let SubCat = require("../models/subCategorySchema");
 const promiseOwnerCategory = require("../utils/ownerWiseCategory");
 
+// Create Category
 let createCategory = async (req, res) => {
   let { name, owner } = req.body;
 
@@ -25,6 +26,7 @@ let createCategory = async (req, res) => {
   });
 };
 
+// Get all category
 let getAllCategory = async (req, res) => {
   let cat = await Cat.find({}).populate("owner");
   // let cat = await Cat.find({}).populate({
@@ -39,6 +41,7 @@ let getAllCategory = async (req, res) => {
   });
 };
 
+// Create sub category
 let createSubCategory = async (req, res) => {
   let { name, parentCategory } = req.body;
 
@@ -67,6 +70,7 @@ let createSubCategory = async (req, res) => {
   });
 };
 
+// Get all sub category
 let getAllSubCategory = async (req, res) => {
   let SubCat = await SubCat.find({}).populate("parentCategory");
 
@@ -77,6 +81,7 @@ let getAllSubCategory = async (req, res) => {
   });
 };
 
+// Get all category wise sub category
 let getAllCategoryWiseSubCategory = async (req, res) => {
   let { id } = req.params;
   let SubCat = await SubCat.find({ parentCategory: id });
@@ -88,6 +93,7 @@ let getAllCategoryWiseSubCategory = async (req, res) => {
   });
 };
 
+// Get all owner wise sub category
 const getAllOwnerWiseSubCategory = async (req, res) => {
   let { id } = req.params;
 
@@ -95,7 +101,7 @@ const getAllOwnerWiseSubCategory = async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    message: "Owner wise category fetched successfully",
+    message: "Owner wise category fetched",
     data: data,
   });
 };

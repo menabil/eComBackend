@@ -8,6 +8,7 @@ const {
   forgotPasswordEmail,
 } = require("../utils/emailSender");
 
+// User Registration
 let registrationController = async (req, res) => {
   let existingUser = await User.findOne({ email: email });
   if (existingUser) {
@@ -75,6 +76,7 @@ let registrationController = async (req, res) => {
   });
 };
 
+// User Login
 let loginController = async (req, res) => {
   let { email, password } = req.body;
 
@@ -135,6 +137,7 @@ let loginController = async (req, res) => {
   }
 };
 
+// User Verification
 let verifyEmailController = async (req, res) => {
   let { token } = req.params;
 
@@ -148,6 +151,7 @@ let verifyEmailController = async (req, res) => {
   });
 };
 
+// Forgot Password
 let forgotPassword = async (req, res) => {
   let { email } = req.body;
 
@@ -186,6 +190,7 @@ let forgotPassword = async (req, res) => {
   });
 };
 
+// Reset Password
 let resetPassword = async (req, res) => {
   let { token } = req.params;
   let { newPassword, confirmPassword } = req.body;

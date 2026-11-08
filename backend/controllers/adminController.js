@@ -1,7 +1,8 @@
 let User = require("../models/userSchema");
 let Cat = require("../models/categorySchema");
 
-let allUserController = async (req, res) => {
+// All User
+let allUser = async (req, res) => {
   let users = await User.find({}).select("-password");
 
   return res.status(200).json({
@@ -11,6 +12,7 @@ let allUserController = async (req, res) => {
   });
 };
 
+// Single User
 let singleUser = async (req, res) => {
   let { id } = req.params;
 
@@ -23,6 +25,7 @@ let singleUser = async (req, res) => {
   });
 };
 
+// Active User
 let activeUser = async (req, res) => {
   let data = await User.find({ status: "active" });
 
@@ -33,6 +36,7 @@ let activeUser = async (req, res) => {
   });
 };
 
+// Deactive User
 let deactiveUser = async (req, res) => {
   let data = await User.find({ status: "deactive" });
 
@@ -43,6 +47,26 @@ let deactiveUser = async (req, res) => {
   });
 };
 
+// Delete User
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  const deletedUser = await User.findByIdAndDelete(id);
+
+  if (!deletedUser) {
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "User deleted",
+  });
+};
+
+// Update User
 let updateUser = async (req, res) => {
   let { id } = req.params;
   await User.findByIdAndUpdate({ _id: id }, req.body, { new: true });
@@ -53,6 +77,7 @@ let updateUser = async (req, res) => {
   });
 };
 
+// Update Category
 const categoryUpdate = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
@@ -76,11 +101,58 @@ const categoryUpdate = async (req, res) => {
   });
 };
 
+// Delete Category
+const deleteCategory = async (req, res) => {
+  let { id } = req.params;
+
+  const deletedCategory = await Cat.findByIdAndDelete(id);
+
+  if (!deletedCategory) {
+    return res.status(404).json({
+      success: false,
+      message: "Category not found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category deleted",
+  });
+};
+
+// Category Status
+const categoryStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const updatedCategory = await Cat.findByIdAndUpdate(
+    id,
+    { status },
+    { new: true },
+  );
+
+  if (!updatedCategory) {
+    return res.status(404).json({
+      success: false,
+      message: "Category not found",
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: "Category status updated",
+    data: updatedCategory,
+  });
+};
+
 module.exports = {
-  allUserController,
+  allUser,
   singleUser,
   activeUser,
   deactiveUser,
+  deleteUser,
   updateUser,
   categoryUpdate,
+  deleteCategory,
+  categoryStatus,
 };
