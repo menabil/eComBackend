@@ -20,6 +20,7 @@
     "mongodb": "^7.6.0",
     "mongoose": "^9.9.5",
     "nodemailer": "^10.0.10",
-    "nodemon": "^3.1.14"
+    "nodemon": "^3.1.14",
+    "swagger": "^0.7.5"
   }
 }
